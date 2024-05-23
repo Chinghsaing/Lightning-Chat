@@ -23,8 +23,6 @@ export const useStore = defineStore({
                 messages: [
                     { id: 'messageId1', sender: 'userId3', content: 'Hello!', timestamp: 1627738339574 },
                     { id: 'messageId2', sender: 'userId2', content: 'Hi, how are you?', timestamp: 1627738359574 },
-                    { id: 'messageId2', sender: 'userId2', content: '上号', timestamp: 1627738359580 },
-                    { id: 'messageId2', sender: 'userId3', content: 'G', timestamp: 1627738359581 },
                 ],
             },
             {
@@ -33,8 +31,6 @@ export const useStore = defineStore({
                 messages: [
                     { id: 'messageId1', sender: 'userId3', content: 'Hi!', timestamp: 1627738339574 },
                     { id: 'messageId2', sender: 'userId1', content: 'Manba Out!', timestamp: 1627738359580 },
-                    { id: 'messageId2', sender: 'userId1', content: '我只能永远', timestamp: 1627738359585 },
-                    { id: 'messageId2', sender: 'userId3', content: '读着对白', timestamp: 1627738359599 },
                 ],
             },
             {
@@ -43,10 +39,10 @@ export const useStore = defineStore({
                 messages: [
                     { id: 'messageId1', sender: 'userId3', content: 'Hi!', timestamp: 1627738339580 },
                     { id: 'messageId2', sender: 'userId1', content: '别叫', timestamp: 1627738359584 },
-                    { id: 'messageId2', sender: 'userId1', content: 'fuck', timestamp: 1627738359586 },
-                    { id: 'messageId2', sender: 'userId2', content: 'What Can i say', timestamp: 1627738359588 },
-                    { id: 'messageId2', sender: 'userId3', content: 'shut up', timestamp: 1627738359590 },
-                    { id: 'messageId2', sender: 'userId2', content: '急了', timestamp: 1627738359599 },
+                    { id: 'messageId3', sender: 'userId1', content: 'fuck', timestamp: 1627738359586 },
+                    { id: 'messageId4', sender: 'userId2', content: 'What Can i say', timestamp: 1627738359588 },
+                    { id: 'messageId5', sender: 'userId3', content: 'shut up', timestamp: 1627738359590 },
+                    { id: 'messageId6', sender: 'userId2', content: '急了', timestamp: 1627738359599 },
                 ],
             },
         ],

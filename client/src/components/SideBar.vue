@@ -13,7 +13,7 @@
             Lightning
         </div>
         <div class="decoration">
-            <button ref="buttonRef" v-click-outside="onClickOutside">
+            <button ref="buttonRef" @click="isHover = !isHover" v-click-outside="onClickOutside" :class="{ active: isHover }">
                 <svg t="1716369673619" class="icon" viewBox="0 0 1024 1024" version="1.1"
                     xmlns="http://www.w3.org/2000/svg" p-id="2556" width="32" height="32">
                     <path
@@ -57,7 +57,7 @@
 
 <script setup>
 import { useStore } from '@/store/ChatStore'
-import { ref, unref } from 'vue'
+import { ref, unref, computed } from 'vue'
 import { ClickOutside as vClickOutside } from 'element-plus'
 import debounce from 'lodash/debounce'
 
@@ -66,15 +66,16 @@ const currentUserAvatar = chatStore.currentUser.avatar
 const buttonRef = ref()
 const popoverRef = ref()
 const username = ref()
-
+const isHover = ref(false)
+const currentUser = chatStore.currentUser
 const isShow = ref(false)
 const isLoading = ref(true)
 const friendInfo = ref()
 const finish = ref(false)
 const onClickOutside = () => {
+    isHover.value = false
     unref(popoverRef).popperRef?.delayHide?.()
 }
-
 const searchFriend = () => {
     isLoading.value = true
     const friend = chatStore.users.find(user => username.value === user.name)
@@ -93,7 +94,7 @@ const searchFriend = () => {
 const debouncedSearchFriend = debounce(searchFriend, 1000)
 
 const handleInput = () => {
-    if (username.value.trim() === '') {
+    if (username.value === '') {
         isShow.value = false
         isLoading.value = false
         finish.value = false
@@ -105,8 +106,24 @@ const handleInput = () => {
         debouncedSearchFriend()
     }
 }
-const AddFriend=()=>{
-    
+const AddFriend = () => {
+    if (finish.value) {
+        const friend = chatStore.users.find(user => username.value === user.name)
+        const currentUserId = chatStore.users.find(user => currentUser.id === user.id)
+        if (!currentUserId.friends.includes(friend.id)) {
+            currentUserId.friends.push(friend.id)
+            const newConversation = {
+                id: 'conversationId' + Date.now(),
+                participants: [friend.id, currentUser.id],
+                messages: [
+                    { id: 'messageId1', sender: friend.id, content: '我们已经是好友了，快来发送消息吧！', timestamp: Date.now() },
+                ],
+            }
+            chatStore.conversations.push(newConversation)
+        } else {
+            alert('已经是好友了')
+        }
+    }
 }
 </script>
 <style scoped lang="less">
@@ -149,6 +166,16 @@ const AddFriend=()=>{
             border: none;
             padding: 0;
             background-color: rgb(235, 235, 235);
+
+            &.active {
+                background-color: #d4d4d4;
+            }
+
+            &:hover {
+                cursor: pointer;
+                background-color: #d4d4d4;
+                /* 添加悬停效果颜色 */
+            }
         }
     }
 }
@@ -187,6 +214,12 @@ const AddFriend=()=>{
         color: rgb(245, 245, 245);
         font-weight: bold;
         margin-top: 40px;
+
+        &:hover {
+            cursor: pointer;
+            background-color: #1e9aff;
+            /* 添加悬停效果颜色 */
+        }
     }
 }
 </style>

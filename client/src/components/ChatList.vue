@@ -1,31 +1,35 @@
 <template>
-    <div class="conversation-list">
+    <TransitionGroup name="list" tag="div" class="conversation-list">
         <div class="friend" v-for="(conversation, index) in chatStore.$state.conversations.filter(conversation =>
             conversation.participants.includes(chatStore.$state.currentUser.id))" :key="conversation.id"
-            @click="openChat(conversation.id, conversation)">
+            @click="openChat(conversation.id, conversation)" :class="{ select: isSelected(conversation.id) }">
             <div class="avatar">
                 <img v-if="conversation.participants.length > 2" :src="group" alt="" width="36px" height="36px">
-                <img v-else
-                    :src="getUserAvatar(conversation)"
-                    alt="" width="36px" height="36px">
+                <img v-else :src="getUserAvatar(conversation)" alt="" width="36px" height="36px">
             </div>
             <div class="friend-msg">
                 <h3>
                     {{ conversation.participants.length > 2 ? '群聊' : getUsername(conversation) }}
                 </h3>
-                <p>{{ getLastMessage(conversation) }}</p>
+                <div class="last-message-container">
+                    <p>{{ getLastMessage(conversation) }}</p>
+                </div>
             </div>
+            <el-badge badge-style="border: none" :value="1" :max="99" :is-dot="false" :hidden="false" type="danger"
+                :offset="[0, 15]" :show-zero="false">
+            </el-badge>
         </div>
-    </div>
+    </TransitionGroup>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
 import { useStore } from '@/store/ChatStore'
 import group from '@/assets/group.png'
+import { ref } from 'vue';
 const chatStore = useStore()
 const router = useRouter()
-
+const selectedConversationId = ref(null)
 const openChat = (conversationId, conversation) => {
     if (conversation.participants.length > 2) {
         chatStore.setIsGroup(true)
@@ -38,14 +42,18 @@ const openChat = (conversationId, conversation) => {
             conversationId,
         }
     })
+    selectedConversationId.value = conversationId
+}
+const isSelected = (conversationId) => {
+    return selectedConversationId.value === conversationId
 }
 const getUserAvatar = (conversation) => {
-    const otherUser = conversation.participants.filter(userId=>userId !== chatStore.$state.currentUser.id)
+    const otherUser = conversation.participants.filter(userId => userId !== chatStore.$state.currentUser.id)
     const otherUserAvatar = getUserById(otherUser[0]).avatar
     return otherUserAvatar
 }
 const getUsername = (conversation) => {
-    const otherUser = conversation.participants.filter(userId=>userId !== chatStore.$state.currentUser.id)
+    const otherUser = conversation.participants.filter(userId => userId !== chatStore.$state.currentUser.id)
     const otherUsername = getUserById(otherUser[0]).name
     return otherUsername
 }
@@ -85,10 +93,26 @@ const getLastMessage = (conversation) => {
         overflow: hidden;
     }
 
+    &.select {
+        background-color: #e2e2e2;
+        /* 更改为你想要的选中背景色 */
+    }
+
     .friend-msg {
         padding: 10px;
         width: 164px;
         overflow: hidden;
+    }
+
+    .last-message-container {
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        /* 限制为两行 */
+        -webkit-box-orient: vertical;
+        /* 垂直布局 */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
     }
 
     h3 {
@@ -103,6 +127,17 @@ const getLastMessage = (conversation) => {
 }
 
 .select {
-    background-color: #dddddd;
+    background-color: rgb(36, 36, 36);
+}
+
+.list-enter-active,
+.list-leave-active {
+    transition: all 0.5s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
 }
 </style>

@@ -13,24 +13,26 @@
 </template>
 
 <script setup>
-import { watch, onMounted, onBeforeUnmount, onUpdated, nextTick, ref } from 'vue'
+import { watch, onMounted, onBeforeUnmount, ref, nextTick } from 'vue'
 import { useStore } from '@/store/ChatStore'
 import { inject } from 'vue'
 
 const chatStore = useStore()
 const currentUser = chatStore.currentUser
 const socket = inject('socket')
-
 const props = defineProps({
     conversationId: String
 })
 
 const conversation = ref(null)
 
+// 更新当前对话的函数
 const updateConversation = () => {
-    conversation.value = chatStore.conversations.find(conv => conv.id === props.conversationId) || null
+    const conv = chatStore.conversations.find(conv => conv.id === props.conversationId) || null
+    conversation.value = conv ? { ...conv } : null
 }
 
+// 获取用户头像的函数
 const getUserAvatar = (userId) => {
     if (userId === currentUser.id) {
         return currentUser.avatar
@@ -40,36 +42,45 @@ const getUserAvatar = (userId) => {
     }
 }
 
+// 离开当前对话的函数
 const leaveConversation = () => {
     socket.emit('leaveConversation', props.conversationId)
 }
 
+// 监控对话ID的变化并更新对话
 watch(() => props.conversationId, (newConversationId) => {
     leaveConversation()
     updateConversation()
 }, { immediate: true })
 
+// 组件挂载时的处理逻辑
 onMounted(() => {
     socket.on('newMessage', (newMessage) => {
-        const conv = chatStore.conversations.find(conv => conv.id === props.conversationId)
-        if (conv) {
-            conv.messages.push(newMessage)
-            if (conv.id === conversation.value.id) {
-                conversation.value = { ...conv }
+        // 只处理当前对话的消息
+        if (newMessage.conversationId === props.conversationId) {
+            const conv = chatStore.conversations.find(conv => conv.id === newMessage.conversationId)
+            if (conv) {
+                conv.messages.push(newMessage)
+                // 更新当前对话
+                if (conv.id === conversation.value.id) {
+                    conversation.value = { ...conv }
+                }
             }
-        }
-    });
+        }else{
+            chatStore.conversations.find(conv => conv.id === newMessage.conversationId).messages.push(newMessage)
+            }
+    })
 
+    // 组件卸载时移除消息监听
     onBeforeUnmount(() => {
         socket.off('newMessage')
-    });
-});
+    })
+})
 
-onUpdated(() => {
-    nextTick(() => {
-        window.dispatchEvent(new CustomEvent('new-message-ready'));
-    });
-});
+// 组件更新时的处理逻辑
+nextTick(() => {
+    window.dispatchEvent(new CustomEvent('new-message-ready'))
+})
 </script>
 
 <style lang="less" scoped>

@@ -2,7 +2,7 @@
     <TransitionGroup name="list" tag="div" class="conversation-list">
         <div class="friend" v-for="(conversation, index) in chatStore.$state.conversations.filter(conversation =>
             conversation.participants.includes(chatStore.$state.currentUser.id))" :key="conversation.id"
-            @click="openChat(conversation.id, conversation)" :class="{ select: isSelected(conversation.id) }">
+            @click="openChat(conversation.id, conversation),isRead(conversation)" :class="{ select: isSelected(conversation.id) }">
             <div class="avatar">
                 <img v-if="conversation.participants.length > 2" :src="group" alt="" width="36px" height="36px">
                 <img v-else :src="getUserAvatar(conversation)" alt="" width="36px" height="36px">
@@ -15,8 +15,8 @@
                     <p>{{ getLastMessage(conversation) }}</p>
                 </div>
             </div>
-            <el-badge badge-style="border: none" :value="1" :max="99" :is-dot="false" :hidden="false" type="danger"
-                :offset="[0, 15]" :show-zero="false">
+            <el-badge badge-style="border: none" :value="unreadMessagesCount(conversation)" :max="99" :is-dot="false" :hidden="false" type="danger"
+                :offset="[0, 15]" :show-zero="false" @click="unreadMessagesCount(conversation)">
             </el-badge>
         </div>
     </TransitionGroup>
@@ -67,6 +67,23 @@ const getLastMessage = (conversation) => {
         return lastMessage.content
     }
     return "暂无消息"
+}
+const unreadMessagesCount = (conversation) => {
+    // 初始化计数器
+    let count = 0;
+    // 遍历消息
+    conversation.messages.forEach((message) => {
+        // 检查消息是否未被userId3阅读
+        if (message.sender !== chatStore.$state.currentUser.id && !message.isRead[chatStore.$state.currentUser.id]) {
+            count++;
+        }
+    });
+    return count;
+};
+const isRead = (conversation) =>{
+    conversation.messages.forEach((message) => {
+        message.isRead[chatStore.$state.currentUser.id] = true;
+    });
 }
 </script>
 <style lang="less" scoped>

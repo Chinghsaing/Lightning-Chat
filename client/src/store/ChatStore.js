@@ -21,28 +21,84 @@ export const useStore = defineStore({
                 id: 'conversationId1',
                 participants: ['userId2', 'userId3'],
                 messages: [
-                    { id: 'messageId1', sender: 'userId3', content: 'Hello!', timestamp: 1627738339574 },
-                    { id: 'messageId2', sender: 'userId2', content: 'Hi, how are you?', timestamp: 1627738359574 },
+                    {
+                        id: 'messageId1', sender: 'userId3', content: 'Hello!', timestamp: 1627738339574, isRead: {
+                            'userId2': false,
+                            'userId3': false,
+                        },
+                    },
+                    {
+                        id: 'messageId2', sender: 'userId2', content: 'Hi, how are you?', timestamp: 1627738359574, isRead: {
+                            'userId2': false,
+                            'userId3': false,
+                        },
+                    },
                 ],
             },
             {
                 id: 'conversationId2',
                 participants: ['userId1', 'userId3'],
                 messages: [
-                    { id: 'messageId1', sender: 'userId3', content: 'Hi!', timestamp: 1627738339574 },
-                    { id: 'messageId2', sender: 'userId1', content: 'Manba Out!', timestamp: 1627738359580 },
+                    {
+                        id: 'messageId1', sender: 'userId3', content: 'Hi!', timestamp: 1627738339574, isRead: {
+                            'userId1': false,
+                            'userId3': false,
+                        },
+                    },
+                    {
+                        id: 'messageId2', sender: 'userId1', content: 'Manba Out!', timestamp: 1627738359580, isRead: {
+                            'userId1': false,
+                            'userId3': false,
+                        },
+                    },
                 ],
             },
             {
                 id: 'conversationId3',
                 participants: ['userId3', 'userId1', 'userId2'],
                 messages: [
-                    { id: 'messageId1', sender: 'userId3', content: 'Hi!', timestamp: 1627738339580 },
-                    { id: 'messageId2', sender: 'userId1', content: '别叫', timestamp: 1627738359584 },
-                    { id: 'messageId3', sender: 'userId1', content: 'fuck', timestamp: 1627738359586 },
-                    { id: 'messageId4', sender: 'userId2', content: 'What Can i say', timestamp: 1627738359588 },
-                    { id: 'messageId5', sender: 'userId3', content: 'shut up', timestamp: 1627738359590 },
-                    { id: 'messageId6', sender: 'userId2', content: '急了', timestamp: 1627738359599 },
+                    {
+                        id: 'messageId1', sender: 'userId3', content: 'Hi!', timestamp: 1627738339580, isRead: {
+                            'userId2': false,
+                            'userId3': false,
+                            'userId1': false,
+                        },
+                    },
+                    {
+                        id: 'messageId2', sender: 'userId1', content: '别叫', timestamp: 1627738359584, isRead: {
+                            'userId2': false,
+                            'userId3': false,
+                            'userId1': false,
+                        },
+                    },
+                    {
+                        id: 'messageId3', sender: 'userId1', content: 'fuck', timestamp: 1627738359586, isRead: {
+                            'userId2': false,
+                            'userId3': false,
+                            'userId1': false,
+                        },
+                    },
+                    {
+                        id: 'messageId4', sender: 'userId2', content: 'What Can i say', timestamp: 1627738359588, isRead: {
+                            'userId2': false,
+                            'userId3': false,
+                            'userId1': false,
+                        },
+                    },
+                    {
+                        id: 'messageId5', sender: 'userId3', content: 'shut up', timestamp: 1627738359590, isRead: {
+                            'userId2': false,
+                            'userId3': false,
+                            'userId1': false,
+                        },
+                    },
+                    {
+                        id: 'messageId6', sender: 'userId2', content: '急了', timestamp: 1627738359599, isRead: {
+                            'userId2': false,
+                            'userId3': false,
+                            'userId1': false,
+                        },
+                    },
                 ],
             },
         ],

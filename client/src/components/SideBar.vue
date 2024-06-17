@@ -110,13 +110,18 @@ const AddFriend = () => {
     if (finish.value) {
         const friend = chatStore.users.find(user => username.value === user.name)
         const currentUserId = chatStore.users.find(user => currentUser.id === user.id)
+        const friendID = friend.id
         if (!currentUserId.friends.includes(friend.id)) {
             currentUserId.friends.push(friend.id)
             const newConversation = {
                 id: 'conversationId' + Date.now(),
                 participants: [friend.id, currentUser.id],
                 messages: [
-                    { id: 'messageId1', sender: friend.id, content: '我们已经是好友了，快来发送消息吧！', timestamp: Date.now() },
+                    { id: 'messageId1', sender: friend.id, content: '我们已经是好友了，快来发送消息吧！', timestamp: Date.now() ,
+                    isRead:{
+                        friendID : false,
+                        currentUserId : false,
+                    }},
                 ],
             }
             chatStore.conversations.push(newConversation)
